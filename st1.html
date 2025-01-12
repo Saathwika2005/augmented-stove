@@ -82,6 +82,14 @@
     <p>Flame turned off</p>
     <button class="popup-close" id="popupCloseBtn">OK</button>
   </div>
+  <!-- Custom Alert Modal -->
+<div class="custom-alert" id="customAlert">
+  <div class="custom-alert-content">
+    <p id="customAlertMessage">This is a message</p>
+    <button class="custom-alert-close" id="customAlertCloseBtn">OK</button>
+  </div>
+</div>
+
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -134,22 +142,23 @@
     const currentTemperature = document.getElementById('currentTemperature');
     const currentAction = document.getElementById('currentAction');
     
-
-    // Get modal elements
+    // Custom Alert Logic
 const customAlert = document.getElementById('customAlert');
-const alertMessage = document.getElementById('alertMessage');
-const alertCloseBtn = document.getElementById('alertCloseBtn');
+const customAlertMessage = document.getElementById('customAlertMessage');
+const customAlertCloseBtn = document.getElementById('customAlertCloseBtn');
 
 // Function to show the custom alert
-function showAlert(message) {
-  alertMessage.textContent = message;
-  customAlert.style.display = 'flex';
+function showCustomAlert(message) {
+  customAlertMessage.textContent = message;
+  customAlert.style.display = 'flex'; // Show the modal
 }
 
 // Event listener to close the alert
-alertCloseBtn.addEventListener('click', () => {
-  customAlert.style.display = 'none';
+customAlertCloseBtn.addEventListener('click', () => {
+  customAlert.style.display = 'none'; // Hide the modal
 });
+
+
 
      //set firebase initials
     onValue(ref(database, 'stove/temp'), (snapshot) => {
@@ -186,7 +195,7 @@ alertCloseBtn.addEventListener('click', () => {
 
       set(ref(database, 'stove/boil'), { value: 1 });
       set(ref(database, 'stove/boil/flag'), { value: 1 });
-      alert("Boiling option enabled!");
+      showCustomAlert("Boiling option enabled!");
       set(ref(database, 'stove/boil/isfinished'), { value: 0 });
      
       currentAction.textContent = "Currently boiling";
@@ -202,7 +211,7 @@ alertCloseBtn.addEventListener('click', () => {
       const data = snapshot.val();
        if(data.boil.isfinished.value===1){
         currentAction.textContent = "Boiling done";
-        showAlert("Boiling done!");
+        showCustomAlert("Boiling done!");
         set(ref(database, 'stove/boil/isfinished'), { value: 0 });
 
       }
@@ -217,7 +226,7 @@ alertCloseBtn.addEventListener('click', () => {
       set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
       set(ref(database, 'stove/whistles/flag'), { value: 0 });
 
-      showAlert("Boiling option disabled!");
+      showCustomAlert("Boiling option disabled!");
     });
 
     // heating pane
@@ -225,7 +234,7 @@ alertCloseBtn.addEventListener('click', () => {
     setTemperatureBtn.addEventListener('click', () => {
       set(ref(database, 'stove/temperature'), { value: temperatureSlider.value });
       set(ref(database, 'stove/boil/flag'), { value: 0 });
-      showAlert(`Temperature set to ${temperatureSlider.value}°C`)
+      showCustomAlert(`Temperature set to ${temperatureSlider.value}°C`)
       set(ref(database, 'stove/temperature/isfinished'), { value: 0 });
       set(ref(database, 'stove/temperature/flag'), { value: 1 });
       currentAction.textContent = `Currently heating upto ${data.temperature.value} °C`;
@@ -238,7 +247,7 @@ alertCloseBtn.addEventListener('click', () => {
       const data = snapshot.val();
       if(data.temperature.isfinished.value===1){
       currentAction.textContent ="Heating done";
-      showAlert("Heating done!");
+      showCustomAlert("Heating done!");
       set(ref(database, 'stove/temperature/isfinished'), { value: 0 });
     }
 });
@@ -260,9 +269,9 @@ alertCloseBtn.addEventListener('click', () => {
 });
       set(ref(database, 'stove/whistles/flag'), { value: 0 });
       set(ref(database, 'stove/flamePercentage'), { value:"50"});
-        showAlert(`Timer duration set to ${timerDuration} minutes`);
+        showCustomAlert(`Timer duration set to ${timerDuration} minutes`);
       } else {
-        showAlert('Please enter a valid duration.');
+        showCustomAlert('Please enter a valid duration.');
       }
     });
     
@@ -291,7 +300,7 @@ alertCloseBtn.addEventListener('click', () => {
 });
 //flame percent
       set(ref(database, 'stove/flamePercentage'), { value:"50"});
-      showAlert(`Whistles set to ${whistleValue}`);
+      showCustomAlert(`Whistles set to ${whistleValue}`);
     });
 
     
