@@ -358,37 +358,46 @@ body {
 
 /* Custom Alert Modal Styles */
 .custom-alert {
-  display: none;
+  display: none; /* Initially hidden */
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
 }
 
 .custom-alert-content {
-  background: #fff;
+  font-family:Roboto,Ariel;
+  font-weight:200;
+  font-size: 24px;
+  background: #878787;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 8px;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.custom-alert-close {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.custom-alert-content p {
+  margin-bottom: 20px;
   font-size: 16px;
+  color: #333;
+}
+
+.custom-alert-close {
+  background: #3e3e42;
+  color: #a29f9f;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .custom-alert-close:hover {
-  background-color: #0056b3;
+  transform: scale(1.2);
+  background: #2e2e2f;
+  box-shadow: 5px 5px 10px #2a2a2a;
 }
