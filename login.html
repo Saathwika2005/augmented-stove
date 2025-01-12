@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login to Augmented Stove</title>
+  <link rel="stylesheet" href="log.css">
+  
+</head>
+<body>
+  <div class="login-container">
+    <h1>Augmented Stove Login</h1>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="stoveName">Stove Name:</label>
+        <input type="text" id="stoveName" name="stoveName" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+    <p id="errorMessage" class="error-message"></p>
+  </div>
+
+  <script type="module">
+    // Firebase Setup
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFNwPEbSQ4ZrYKp31pEI3qjTZKa7FcKMg",
+      authDomain: "augmented-stove.firebaseapp.com",
+      projectId: "augmented-stove",
+      storageBucket: "augmented-stove.appspot.com",
+      messagingSenderId: "95902832259",
+      appId: "1:95902832259:web:69ffefe21e589c43442db6",
+      measurementId: "G-1S51X9DVB6",
+      databaseURL: "https://augmented-stove-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Valid credentials
+    const validStoveName = "MyStove";
+    const validPassword = "12345";
+
+    // Event Listener for Login Form Submission
+    document.getElementById("loginForm").addEventListener("submit", (event) => {
+      event.preventDefault(); // Prevent default form submission
+
+      const stoveName = document.getElementById("stoveName").value;
+      const password = document.getElementById("password").value;
+
+      if (stoveName === validStoveName && password === validPassword) {
+        // Simulate connecting to Wi-Fi by updating Firebase
+        set(ref(database, 'stove/connection'), { status: "connected" })
+          .then(() => {
+            alert("Connected to your stove!");
+            // Redirect to the stove page
+            window.location.href = "./st.html"; // Ensure this file exists in your directory
+          })
+          .catch((error) => {
+            alert("Error connecting to Wi-Fi: " + error.message);
+          });
+      } else {
+        const errorMessage = document.getElementById("errorMessage");
+        errorMessage.style.display = "block";
+        errorMessage.textContent = "Invalid Stove Name or Password!";
+      }
+    });
+  </script>
+</body>
+</html>

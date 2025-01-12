@@ -1,0 +1,394 @@
+/* styles.css */
+
+/* General styling */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, Ariel;
+    background-color:  	 #252526; /* ChatGPT dark theme */
+    color: #d1d5db; /* Light text */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  p {
+    font-family: Roboto, Ariel;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .icon {
+    width: 30px;
+    height: 30px;
+    border-radius:50px;
+  }
+  
+  .notificon{
+    width: 30px;
+    height: 30px;
+    border-radius:50px;
+    background-color: #3e3e42;
+  }
+  .container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: 	#3e3e42; /* Slightly darker theme for the header */
+    padding: 10px 20px;
+  }
+  
+  .title {
+    font-family:Roboto,Ariel;
+    font-weight:200;
+    font-size: 24px;
+    color: #e6e6e6; /* ChatGPT green theme */
+    margin: 0;
+  }
+  
+  .notification img {
+    width: 24px;
+    height: 24px;
+    font-family:Roboto,Ariel;
+    font-weight:200;
+    
+    color: #e6e6e6; /* Makes it white */
+  }
+  
+  /* Content layout */
+  .content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Row for picture and status */
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+  }
+  
+  
+  
+  .status {
+    flex: 1; /* Takes up the remaining space */
+    text-align: center;
+  }
+  
+  .status h3 {
+    font-size: 20px;
+    color: #e6e6e6; /* ChatGPT green */
+    margin-bottom: 10px;
+  }
+  
+  .status p {
+    font-size: 18px;
+    color: #d1d5db;
+    background-color:  	#3e3e42;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  /* Buttons */
+  .buttons {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px 0;
+  }
+  .notifbutton{
+    background-color: #3e3e42;
+    border: 0px; /* Bright blue for contrast */
+    cursor: pointer;
+  }
+  .overlay-image {
+    position: absolute;
+    top: 282px; /* Adjust as per your need */
+    left: 133px; /* Adjust as per your need */
+    width: 100px; /* Adjust the size of the overlay image */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 50%;
+    scale: 1.25;
+    opacity:0;
+}
+  
+  .button {
+    background-color: #b3b3b3; /* Bright blue for contrast */
+    border: none;
+    color: #252526;
+    padding: 15px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .button:hover {
+    transform: scale(1.2);
+    background-color: #3e3e42;
+    color: #fff; /* Darker blue on hover */
+    box-shadow: 5px 5px 10px #121212;
+  }
+  .button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  
+
+  .tooltip {
+    visibility: hidden;
+    width: 150px;
+    font-size: 15px ;
+    font-family: Roboto, Ariel;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 125%; /* Position above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    size: 30px;
+  }
+
+  /* Arrow below the tooltip */
+  .tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* Position at the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  .button.stop {
+    background-color: #ef4444; /* Bright red */
+  }
+  
+  .button.stop:hover {
+    transform: scale(1.2);
+    background-color: #dc2626; /* Darker red on hover */
+    box-shadow: 5px 5px 10px #121212;
+  }
+  .back-btn{
+ 
+    margin-top: 10px;
+    padding: 5px 15px;
+    background-color: #f44336;
+    color: rgb(33, 32, 32);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width:70px;
+    z-index:2; /* Bright red */
+  }
+  
+  .back-btn:hover {
+    transform: scale(1.2);
+    background-color: #dc2626; /* Darker red on hover */
+    box-shadow: 5px 5px 10px #121212;
+  }
+  .slider-pane {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 30%;
+    width: 40%;
+    height: 20%;
+    background-color: #565454e6;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .slider {
+    width: 80%;
+    margin: 20px auto;
+  }
+
+  .close-btn {
+    margin-top: 10px;
+    padding: 5px 15px;
+    background-color: #f44336;
+    color: rgb(33, 32, 32);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .close-btn:hover {
+    background-color: #d32f2f;
+    color:#ccc;
+    transform: scale(1.2);
+  }
+  
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #565454e6;
+    padding: 20px;
+    border: 2px solid #4a4848;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+    z-index: 1000;
+    text-align: center;
+  }
+
+  .popup-close {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color:  #a7a3a3e6;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .copilot-pane {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    background-color: rgba(46, 45, 45, 0.8);
+    padding: 20px;
+    border-radius: 30px;
+    color: #ffffff;
+   
+  }
+  
+  .pane {
+    background:#3e3e42;
+    border-radius: 30px;
+    opacity:0.895;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pane:hover {
+    background: #4e4e52; /* Slightly lighter color on hover */
+    transform: scale(1.05); /* Slightly enlarge the pane */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+    transition: all 0.3s ease; 
+    z-index: 2;/* Smooth transition for the effect */
+}
+  .option-btn {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius :5px;
+    transition: all 0.3s ease;
+  
+  } 
+  .option-btn:hover {
+    transform: scale(1.2);
+    background-color: #9e9e9e; /* Darker red on hover */
+    box-shadow: 5px 5px 10px #121212;
+  } 
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #934141;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  
+  .time-input {
+    margin: 5px 0;
+    padding: 5px;
+    width: 80px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .whistle-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Adjust spacing between buttons and the count display */
+  }
+  
+  #whistleCount {
+    text-align: center;
+    min-width: 30px; /* Ensures consistent width */
+    font-size: 1.2rem; /* Adjust font size for better visibility */
+  }
+  /* Style to ensure the Copilot Pane is hidden by default */
+.copilot-pane {
+  display: none; /* Hide initially */
+  /* Add additional styles for the copilot pane as needed */
+}
+
+/* Other styles for your page */
+
+
+
+
+
+/* Custom Alert Modal Styles */
+.custom-alert {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.custom-alert-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.custom-alert-close {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.custom-alert-close:hover {
+  background-color: #0056b3;
+}

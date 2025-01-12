@@ -1,0 +1,72 @@
+    /* CSS Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #545050;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+  
+      .login-container {
+        background-color: #b4afaf;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+      }
+  
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+      }
+  
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+  
+      label {
+        font-size: 1rem;
+        margin-bottom: 5px;
+        display: block;
+      }
+  
+      input {
+        width: 95%;
+        align-items:center;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #faeaea;
+        border-radius: 5px;
+      }
+       input:hover{
+        transform: scale(1.1);
+        background-color: #91919d;
+        color: #fff; /* Darker blue on hover */
+        box-shadow: 5px 5px 10px #121212;
+       }
+  
+      .login-btn {
+        background-color: #7b95b1;
+        color: white;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+  
+      .login-btn:hover {
+        background-color: #0056b3;
+      }
+  
+      .error-message {
+        color: red;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        display: none;
+      }

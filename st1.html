@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Augmented Stove</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <img src="icon.jpg" alt="Stove Icon" class="icon" />
+      <h1 class="title">Augmented Stove</h1>
+      <div class="notification">
+        <button class="notifbutton"><img src="notificon.png" alt="Notification Bell" class="notificon" /></button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="row">
+        <div class="stove-picture"><img src="stove-pic.png" alt="Stove" class="stovepic" />
+          <img src="flam.png" alt="Overlay" class="overlay-image" id="fl" /></div>
+        <div class="status">
+          <h3>STATUS</h3>
+          <p id="currentTemperature">Current Temperature: 27°C</p>
+          <p id="currentAction">No action</p>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="button" id="summonCopilotBtn">SUMMON COPILOT<span class="tooltip">Click to perform actions</span></button>
+        <button class="button" id="percentBtn">PERCENT<span class="tooltip">Click to change flame intensity</span></button>
+        <button class="button stop" id="stopBtn">STOP<span class="tooltip">Click to turn the flame off</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copilot Pane -->
+  <div class="copilot-pane" id="copilotPane">
+  
+      <button class="close-btn" id="closeCopilotBtn">Reset</button>
+     
+
+    <div class="pane" id="pane1">
+      <h3>Do you want to boil?</h3>
+      <button class="option-btn" id="yesBoilBtn">Yes</button>
+      <button class="option-btn" id="noBoilBtn">No</button>
+    </div>
+    <div class="pane" id="pane2">
+      <h3>Do you want to heat?</h3>
+      <input type="range" class="slider" id="temperatureSlider" min="50" max="100" value="50">
+      <p id="temperatureValue">Temperature: 50°C</p>
+      <button class="option-btn" id="setTemperatureBtn">Set Temperature </button>
+    </div>
+    <div class="pane" id="pane3">
+      <h3>Set Timer (mins)</h3>
+      <input type="number" id="timerDurationInput" placeholder="Enter duration (minutes)">
+      <button class="option-btn" id="setTimerBtn">Set Timer</button>
+    </div>
+    <div class="pane" id="pane4">
+      <h3>Set Whistles</h3>
+      <div class="whistle-controls">
+        <button class="option-btn" id="decreaseWhistleBtn">-</button>
+        <p id="whistleCount"><b>0</b></p>
+        <button class="option-btn" id="increaseWhistleBtn">+</button>
+      </div>
+      <button class="option-btn" id="setWhistleBtn">Set Whistles</button>
+    </div>
+    <button class="back-btn" id="backBtn">Back</button>
+  </div>
+
+  <!-- Slider Pane -->
+  <div class="slider-pane" id="sliderPane">
+    <h3>Set Percentage</h3>
+    <input type="range" class="slider" id="percentageSlider" min="0" max="100" value="50">
+    <p id="sliderValue">Value: 50%</p>
+    <button class="close-btn" id="closeSliderBtn">Close</button>
+  </div>
+
+  <!-- Pop-up -->
+  <div class="popup" id="popup">
+    <p>Flame turned off</p>
+    <button class="popup-close" id="popupCloseBtn">OK</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, set,onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFNwPEbSQ4ZrYKp31pEI3qjTZKa7FcKMg",
+      authDomain: "augmented-stove.firebaseapp.com",
+      projectId: "augmented-stove",
+      storageBucket: "augmented-stove.appspot.com",
+      messagingSenderId: "95902832259",
+      appId: "1:95902832259:web:69ffefe21e589c43442db6",
+      measurementId: "G-1S51X9DVB6",
+      databaseURL: "https://augmented-stove-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const flame = document.getElementById('fl');
+
+    // Button Elements
+    const summonCopilotBtn = document.getElementById('summonCopilotBtn');
+    const copilotPane = document.getElementById('copilotPane');
+    const yesBoilBtn = document.getElementById('yesBoilBtn');
+    const noBoilBtn = document.getElementById('noBoilBtn');
+    const percentBtn = document.getElementById('percentBtn');
+    const sliderPane = document.getElementById('sliderPane');
+    const closeSliderBtn = document.getElementById('closeSliderBtn');
+    const percentageSlider = document.getElementById('percentageSlider');
+    const sliderValue = document.getElementById('sliderValue');
+    const stopBtn = document.getElementById('stopBtn');
+    const popup = document.getElementById('popup');
+    const popupCloseBtn = document.getElementById('popupCloseBtn');
+ 
+
+    // Temperature Pane
+    const temperatureSlider = document.getElementById('temperatureSlider');
+    const temperatureValue = document.getElementById('temperatureValue');
+    const setTemperatureBtn = document.getElementById('setTemperatureBtn');
+
+    // Timer Pane
+    const timerDurationInput = document.getElementById('timerDurationInput');
+    const setTimerBtn = document.getElementById('setTimerBtn');
+
+    // Whistle Pane
+    const whistleCount = document.getElementById('whistleCount');
+    const decreaseWhistleBtn = document.getElementById('decreaseWhistleBtn');
+    const increaseWhistleBtn = document.getElementById('increaseWhistleBtn');
+    const setWhistleBtn = document.getElementById('setWhistleBtn');
+    const currentTemperature = document.getElementById('currentTemperature');
+    const currentAction = document.getElementById('currentAction');
+    
+
+    // Get modal elements
+const customAlert = document.getElementById('customAlert');
+const alertMessage = document.getElementById('alertMessage');
+const alertCloseBtn = document.getElementById('alertCloseBtn');
+
+// Function to show the custom alert
+function showAlert(message) {
+  alertMessage.textContent = message;
+  customAlert.style.display = 'flex';
+}
+
+// Event listener to close the alert
+alertCloseBtn.addEventListener('click', () => {
+  customAlert.style.display = 'none';
+});
+
+     //set firebase initials
+    onValue(ref(database, 'stove/temp'), (snapshot) => {
+  const data = snapshot.val();
+  currentTemperature.textContent = `Current Temperature: ${data.value}°C`;
+});
+      set(ref(database, 'stove/temp'), { value: 27 });
+      set(ref(database, 'stove/boil/flag'), { value: 0 });
+      set(ref(database, 'stove/boil/isfinished'), { value: 0 });
+      set(ref(database, 'stove/temperature/flag'), { value: 0 });
+      set(ref(database, 'stove/temperature/isfinished'), { value: 0 });
+      set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+      set(ref(database, 'stove/timerDuration/remtime'), { value: 0 });
+      set(ref(database, 'stove/whistles/flag'), { value: 0 });
+      set(ref(database, 'stove/flamePercentage'), { value:0});
+    
+      // Event Listeners
+    
+    summonCopilotBtn.addEventListener('click', () => {
+      copilotPane.style.display = 'grid'; // Show copilot pane
+    });
+      set(ref(database, 'stove/temp'), { value: 27 });
+      set(ref(database, 'stove/boil/flag'), { value: 0 });
+      set(ref(database, 'stove/boil/isfinished'), { value: 0 });
+      set(ref(database, 'stove/temperature/flag'), { value: 0 });
+      set(ref(database, 'stove/temperature/isfinished'), { value: 0 });
+      set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+      set(ref(database, 'stove/whistles/flag'), { value: 0 });
+      set(ref(database, 'stove/flamePercentage'), { value:0});
+      currentAction.textContent = "No action";
+
+      //boil pane
+    yesBoilBtn.addEventListener('click', () => {
+
+      set(ref(database, 'stove/boil'), { value: 1 });
+      set(ref(database, 'stove/boil/flag'), { value: 1 });
+      alert("Boiling option enabled!");
+      set(ref(database, 'stove/boil/isfinished'), { value: 0 });
+     
+      currentAction.textContent = "Currently boiling";
+  
+     
+      set(ref(database, 'stove/temperature/flag'), { value: 0 });
+      set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+      set(ref(database, 'stove/whistles/flag'), { value: 0 });
+      set(ref(database, 'stove/flamePercentage'), { value:"50"});
+     
+    });
+    onValue(ref(database, 'stove'), (snapshot) => {
+      const data = snapshot.val();
+       if(data.boil.isfinished.value===1){
+        currentAction.textContent = "Boiling done";
+        showAlert("Boiling done!");
+        set(ref(database, 'stove/boil/isfinished'), { value: 0 });
+
+      }
+  });
+
+    noBoilBtn.addEventListener('click', () => {
+      set(ref(database, 'stove/boil'), { value: 0 });
+      set(ref(database, 'stove/boil/flag'), { value: 1 });
+      set(ref(database, 'stove/boil/isfinished'), { value: 0 });
+      currentAction.textContent = "No action";
+      set(ref(database, 'stove/temperature/flag'), { value: 0 });
+      set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+      set(ref(database, 'stove/whistles/flag'), { value: 0 });
+
+      showAlert("Boiling option disabled!");
+    });
+
+    // heating pane
+
+    setTemperatureBtn.addEventListener('click', () => {
+      set(ref(database, 'stove/temperature'), { value: temperatureSlider.value });
+      set(ref(database, 'stove/boil/flag'), { value: 0 });
+      showAlert(`Temperature set to ${temperatureSlider.value}°C`)
+      set(ref(database, 'stove/temperature/isfinished'), { value: 0 });
+      set(ref(database, 'stove/temperature/flag'), { value: 1 });
+      currentAction.textContent = `Currently heating upto ${data.temperature.value} °C`;
+      set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+      set(ref(database, 'stove/whistles/flag'), { value: 0 });
+      set(ref(database, 'stove/flamePercentage'), { value:"50"});
+      ;
+    });
+    onValue(ref(database, 'stove'), (snapshot) => {
+      const data = snapshot.val();
+      if(data.temperature.isfinished.value===1){
+      currentAction.textContent ="Heating done";
+      showAlert("Heating done!");
+      set(ref(database, 'stove/temperature/isfinished'), { value: 0 });
+    }
+});
+
+    // Timer pane
+    setTimerBtn.addEventListener('click', () => {
+      const timerDuration = timerDurationInput.value;
+      if (timerDuration && timerDuration > 0) {
+        set(ref(database, 'stove/timerDuration'), { value: timerDuration });
+        set(ref(database, 'stove/boil/flag'), { value: 0 });
+     
+      set(ref(database, 'stove/temperature/flag'), { value: 0 });
+      
+      set(ref(database, 'stove/timerDuration/flag'), { value: 1 });
+      set(ref(database, 'stove/timerDuration/remtime'), { value: 0 });
+      onValue(ref(database, 'stove'), (snapshot) => {
+      const data = snapshot.val();
+    currentAction.textContent = `Timer running: ${data.timerDuration.remtime.value} mins left`;
+});
+      set(ref(database, 'stove/whistles/flag'), { value: 0 });
+      set(ref(database, 'stove/flamePercentage'), { value:"50"});
+        showAlert(`Timer duration set to ${timerDuration} minutes`);
+      } else {
+        showAlert('Please enter a valid duration.');
+      }
+    });
+    
+// whistle pane
+    increaseWhistleBtn.addEventListener('click', () => {
+      whistleCount.textContent = parseInt(whistleCount.textContent) + 1;
+    });  
+
+    decreaseWhistleBtn.addEventListener('click', () => {
+      whistleCount.textContent = Math.max(parseInt(whistleCount.textContent) - 1, 0);
+    });
+
+    setWhistleBtn.addEventListener('click', () => {
+      const whistleValue = whistleCount.textContent;
+      set(ref(database, 'stove/whistles'), { value: whistleValue });
+      set(ref(database, 'stove/boil/flag'), { value: 0 });
+
+      set(ref(database, 'stove/temperature/flag'), { value: 0 });
+
+      set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+      set(ref(database, 'stove/whistles/flag'), { value: 1 });
+      set(ref(database, 'stove/whistles/remwh'), { value: 0 });
+      onValue(ref(database, 'stove'), (snapshot) => {
+      const data = snapshot.val();
+    currentAction.textContent = `Whistles running: ${data.whistles.remwh.value} whistles left`;
+});
+//flame percent
+      set(ref(database, 'stove/flamePercentage'), { value:"50"});
+      showAlert(`Whistles set to ${whistleValue}`);
+    });
+
+    
+    percentBtn.addEventListener('click', () => {
+      sliderPane.style.display = 'block'; // Show slider pane
+    });
+
+    percentageSlider.addEventListener('input', () => {
+      sliderValue.textContent = `Value: ${percentageSlider.value}%`;
+      fl.style.opacity = percentageSlider.value/ 75;
+      set(ref(database, 'stove/flamePercentage'), { value: percentageSlider.value });
+      set(ref(database, 'stove/flamePercentage/flag'), { value: 1});
+    });
+
+  // reset button
+    const closeCopilotBtn = document.getElementById('closeCopilotBtn');
+
+
+    closeSliderBtn.addEventListener('click', () => {
+      sliderPane.style.display = 'none'; // Hide slider pane
+      closeCopilotBtn.addEventListener('click', () => {
+     
+      
+     set(ref(database, 'stove/boil/flag'), { value: 0 });
+     set(ref(database, 'stove/temperature/flag'), { value: 0 });
+     temperatureSlider.value = 50;
+     temperatureValue.textContent="Temperature: 50°C";
+     set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+     timerDurationInput.value=0;
+     set(ref(database, 'stove/whistles/flag'), { value: 0 });
+     whistleCount.textContent=0;
+     set(ref(database, 'stove/boil'), { value: 0 });
+     set(ref(database, 'stove/temperature'), { value: "50" });
+     set(ref(database, 'stove/timerDuration'), { value: 0 });
+     set(ref(database, 'stove/whistles'), { value: 0 });
+     currentAction.textContent = "No action";  // Hide copilot pane
+   });
+
+
+   popupCloseBtn.addEventListener('click', () => {
+     popup.style.display = 'none';
+     
+   });
+    });
+    // Back Button
+const backBtn = document.getElementById('backBtn');
+
+backBtn.addEventListener('click', () => {
+  copilotPane.style.display = 'none'; 
+});
+  
+//stop button
+    
+    stopBtn.addEventListener('click', () => {
+      set(ref(database, 'stove/flamePercentage'), { value: 0 });
+      set(ref(database, 'stove/boil/flag'), { value: 0 }); 
+      set(ref(database, 'stove/temperature/flag'), { value: 0 });
+      set(ref(database, 'stove/timerDuration/flag'), { value: 0 });
+      set(ref(database, 'stove/whistles/flag'), { value: 0 });
+      set(ref(database, 'stove/boil'), { value: 0 });
+      set(ref(database, 'stove/temperature'), { value:" 50" });
+      set(ref(database, 'stove/timerDuration'), { value: 0 });
+      set(ref(database, 'stove/whistles'), { value: 0 });
+      currentAction.textContent = "No action";
+      
+      popup.style.display = 'block'; // Show popup
+      percentageSlider.value = 0;
+      sliderValue.textContent = 'Value: 0%';
+    });
+  </script>
+</body>
+</html>
